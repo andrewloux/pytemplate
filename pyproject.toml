@@ -1,0 +1,101 @@
+[project]
+name = "${PROJECT_NAME}"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi[standard]>=0.115.8",
+    "flask>=3.1.0",
+    "functional>=0.4",
+    "load-dotenv>=0.1.0",
+    "mypy>=1.15.0",
+    "pydantic>=2.10.6",
+    "pytest>=8.3.4",
+    "black>=23.3.0",
+    "pytest-cov>=4.1.0",
+    "types-requests>=2.31.0.10",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black>=23.3.0",
+    "mypy>=1.15.0",
+    "pytest>=8.3.4",
+    "pytest-cov>=4.1.0",
+]
+
+[tool.mypy]
+# Specify Python version for type checking
+python_version = "3.10"
+
+# Enable all strict options as a baseline
+strict = true
+
+# Require type annotations on all functions and methods
+disallow_untyped_defs = true
+
+# Require complete parameter annotations (no missing parameters)
+disallow_incomplete_defs = true
+
+# Type check the body of functions without annotations
+check_untyped_defs = true
+
+# Require type annotations for decorators
+disallow_untyped_decorators = true
+
+# Make Optional explicit (x: Optional[int] instead of x: int = None)
+no_implicit_optional = true
+
+# Enable strict handling of Optional types
+strict_optional = true
+
+# Warn about redundant type casts
+warn_redundant_casts = true
+
+# Warn about # type: ignore comments not being used
+warn_unused_ignores = true
+
+# Warn about functions that don't explicitly return
+warn_no_return = true
+
+# Warn about returning Any from a function with an explicit return type
+warn_return_any = true
+
+# Warn about code that will never be executed
+warn_unreachable = true
+
+# Don't allow using Any in generic types (List[Any])
+disallow_any_generics = true
+
+# Don't allow Any types from unfollowed imports
+disallow_any_unimported = true
+
+# Disallow subclassing values of type Any
+disallow_subclassing_any = true
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.isort]
+profile = "black"
+skip_gitignore = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+python_classes = "Test*"
+
+[tool.uv.commands]
+# Task runner commands
+format = "black src/ tests/"
+typecheck = "mypy src/ tests/"
+test = "pytest tests/"
+testcov = "pytest --cov=src tests/"
+lint = "uv run format && uv run typecheck"
+check = "uv run lint && uv run test"
+
+# Project initialization tasks
+init = ["pip install -U pip uv", "uv pip install -e ."]
+devinit = ["pip install -U pip uv", "uv pip install -e '.[dev]'"]
