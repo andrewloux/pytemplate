@@ -1,5 +1,8 @@
 [project]
-name = "${PROJECT_NAME}"
+# NOTE: This is a template - `name` will be replaced during initialization
+# The placeholder will cause errors if you try to use the template directly
+# first initialize with: uv run poe init-project <project_name>
+name = "python_project_template"  # Will be replaced during initialization
 version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.10"
@@ -22,6 +25,7 @@ dev = [
     "mypy>=1.15.0",
     "pytest>=8.3.4",
     "pytest-cov>=4.1.0",
+    "poethepoet>=0.25.0",
 ]
 
 [tool.mypy]
@@ -87,15 +91,34 @@ python_files = "test_*.py"
 python_functions = "test_*"
 python_classes = "Test*"
 
-[tool.uv.commands]
-# Task runner commands
-format = "black src/ tests/"
-typecheck = "mypy src/ tests/"
-test = "pytest tests/"
-testcov = "pytest --cov=src tests/"
-lint = "uv run format && uv run typecheck"
-check = "uv run lint && uv run test"
+# This project uses poethepoet (poe) for task running with uv
+# Install the project with development dependencies: uv pip install -e .[dev]
+# Then run tasks with: uv run poe <task-name>
+#
+# Available tasks:
+#   init       - Initialize project with regular dependencies
+#   devinit    - Initialize project with development dependencies
+#   format     - Format code using black
+#   check      - Type check with mypy
+#   test       - Run tests with pytest
+#   test-cov   - Run tests with coverage
 
-# Project initialization tasks
-init = ["pip install -U pip uv", "uv pip install -e ."]
-devinit = ["pip install -U pip uv", "uv pip install -e '.[dev]'"]
+[tool.poe.tasks]
+# Project initialization
+init-project = { script = "scripts/init_project.py", help = "Initialize project with a name (replaces placeholders)" }
+
+# Installation tasks
+init = "uv pip install -e ."
+devinit = "uv pip install -e .[dev]"
+
+# Development tasks
+format = "black src/ tests/"
+check = "mypy src/ tests/"
+test = "pytest tests/"
+test-cov = "pytest --cov=src tests/"
+
+# Combined initialization task
+setup = { sequence = ["devinit", "format", "check"], help = "Setup project completely with one command" }
+
+# Full bootstrap task (initialize project, install deps, format and check)
+bootstrap = { sequence = ["init-project", "devinit", "format", "check"], args = ["<project_name>"], help = "Full project bootstrap: initialize with name, install deps, format code" }

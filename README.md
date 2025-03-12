@@ -1,20 +1,21 @@
-# PyCharm Python Project Template
+# ${PROJECT_NAME}
 
-This template provides a super-typed, standardized structure for Python projects in PyCharm with:
+A modern, strongly-typed Python project using uv and poethepoet.
 
-- Ultra-strict type checking with mypy
-- TypedDict, Literal and Final type annotations
-- Complete typing for all functions and variables
-- pytest testing framework
-- Black code formatting
-- Consistent project structure
-- Pydantic for data validation
+## Features
 
-## Setup and Usage
+- **Ultra-Fast Dependency Management**: Using uv, the next-generation Python package manager
+- **Modern Task Runner**: Task automation with poethepoet
+- **Comprehensive Type Safety**: Ultra-strict type checking with mypy
+- **Modern Type Annotations**: TypedDict, Literal, and Final type annotations
+- **Testing Framework**: pytest with coverage reporting
+- **Code Formatting**: Black code formatter
+- **Data Validation**: Pydantic for runtime validation
+- **Clean Structure**: Organized project structure with src layout
 
-### Project Initialization
+## Quick Start
 
-1. Create a new project from the template:
+1. Create a new project from this template:
    ```bash
    # Clone the template
    git clone https://github.com/username/python-project-template.git my_project
@@ -27,69 +28,114 @@ This template provides a super-typed, standardized structure for Python projects
 
 2. Run the initialization script with your project name:
    ```bash
-   # Initialize project with your project name (must be lowercase with underscores)
+   # Initialize project (project name must be lowercase with underscores)
    ./scripts/init.sh my_project_name
    ```
 
-   This script will:
-   - Validate your project name
-   - Recursively find and replace placeholders throughout the codebase
-   - Create a virtual environment
-   - Provide instructions for next steps
+3. Complete setup with a single command:
+   ```bash
+   # Install dependencies, format code, and verify type checking
+   uv pip install -e .[dev] && uv run poe setup
+   ```
 
-3. Follow the post-initialization instructions to:
-   - Activate the virtual environment: `source .venv/bin/activate`
-   - Install dependencies using the uv task runner
+That's it! Your project is now ready for development.
 
-### Using UV Task Runner
+## Task Runner (uv + poe)
 
-Once initialized, you can use uv as a task runner:
+This template uses uv for dependency management and poethepoet (poe) for task running:
 
 ```bash
-# Install dependencies (regular)
-uv run init
-
-# Install dependencies (development)
-uv run devinit
-
-# Check types
-uv run typecheck
-
-# Format code
-uv run format
-
-# Run tests
-uv run test
-
-# Run all checks (format, typecheck, test)
-uv run check
+# Run any task with:
+uv run poe <task-name>
 ```
+
+### Available Tasks
+
+| Task      | Description                                   | Command                |
+|-----------|-----------------------------------------------|------------------------|
+| init      | Install with regular dependencies             | uv run poe init        |
+| devinit   | Install with development dependencies         | uv run poe devinit     |
+| format    | Format code with black                        | uv run poe format      |
+| check     | Type check with mypy                          | uv run poe check       |
+| test      | Run tests with pytest                         | uv run poe test        |
+| test-cov  | Run tests with coverage                       | uv run poe test-cov    |
+| setup     | Full dev setup (installs, formats, checks)    | uv run poe setup       |
 
 ## Project Structure
 
-- `src/` - Source code
-  - `internal/` - Internal modules
-  - `py.typed` - Marker file for typed package
-- `tests/` - Test files with type annotations
-- `resources/` - Data files and resources
-- `mypy.ini` and `pyproject.toml` - Type checking configuration
+```
+${PROJECT_NAME}/
+├── pyproject.toml    # Project metadata and dependencies
+├── README.md        # Project documentation
+├── .gitignore       # Git ignore patterns
+├── src/             # Source code package
+│   ├── ${PROJECT_NAME}/
+│   │   ├── __init__.py
+│   │   └── ...      # Package modules
+│   └── py.typed     # Type checking marker
+├── tests/           # Test directory
+│   ├── __init__.py
+│   └── test_*.py    # Test modules
+└── resources/       # Additional resources
+```
 
-## Type Safety Features
+## Type Safety Guidelines
 
-- No implicit Any types
-- No untyped functions or parameters
-- Exhaustive type checking with mypy
-- Explicit Optional[T] for nullable values
-- TypedDict for dictionary returns
-- Literal for string enum values
-- Final for true constants
-- Detailed docstrings with type information
+This template enforces strict typing to catch errors early:
 
-## Commands
+- **Complete Type Annotations**: Every function has parameter and return annotations
+- **No Implicit Any**: Disallows implicit `Any` types
+- **No Partial Typing**: Disallows partial type annotations
+- **Runtime Validation**: Use Pydantic for input validation
+- **TypedDict**: Use for structured dictionary returns
+- **Literals**: Use for string enums and constrained values
+- **Final**: Mark true constants with `Final`
+- **Optional**: Explicit annotation for nullable values
 
-### Development
-- Type check: `mypy src/ tests/`
-- Lint with black: `black src/ tests/`
-- Run all tests: `pytest tests/`
-- Run single test: `pytest tests/test_file.py::test_function_name`
-- Run with coverage: `pytest --cov=src tests/`
+## Development Workflow
+
+### Starting a New Feature
+
+```bash
+# 1. Make sure you're using the latest dependencies
+uv run poe devinit
+
+# 2. Create a new branch
+git checkout -b feature/my-feature
+
+# 3. Make your changes...
+
+# 4. Format and type check
+uv run poe format
+uv run poe check
+
+# 5. Run tests
+uv run poe test
+
+# 6. Commit your changes
+git add .
+git commit -m "Add my feature"
+```
+
+### Running Specific Tests
+
+```bash
+# Run a specific test file
+uv run -- pytest tests/test_specific.py
+
+# Run a specific test function
+uv run -- pytest tests/test_file.py::test_function_name
+
+# Run with extra verbosity
+uv run -- pytest -vv tests/
+```
+
+## Dependency Management
+
+- Add a new dependency: `uv add package_name`
+- Remove a dependency: `uv remove package_name`
+- Update dependencies: `uv pip install -U -e .[dev]`
+
+## CI/CD Integration
+
+This template is ready for CI integration with GitHub Actions or similar services. See the included workflow files for details.

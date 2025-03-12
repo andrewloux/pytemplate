@@ -59,24 +59,23 @@ if [ -f ".idea/\${PROJECT_NAME}.iml" ]; then
     fi
 fi
 
-# Setup virtual environment if it doesn't exist
-if [ ! -d ".venv" ]; then
-    echo "Creating virtual environment..."
-    python -m venv .venv
-    echo "Virtual environment created at .venv/"
-fi
-
 echo ""
 echo "Project initialized successfully!"
 echo "Project name set to: $PROJECT_NAME"
 echo ""
 echo "Next steps:"
-echo "1. Activate the virtual environment:"
-echo "   source .venv/bin/activate"
+echo "1. Complete setup with one command (installs dev dependencies, formats code, and runs type checking):"
+echo "   uv pip install -e .[dev] && uv run poe setup"
 echo ""
-echo "2. Install dependencies:"
-echo "   # For regular setup"
-echo "   uv run init"
+echo "   Or use individual commands:"
+echo "   # Install with regular dependencies"
+echo "   uv pip install -e . && uv run poe init"
 echo ""
-echo "   # For development setup (includes all dev tools)"
-echo "   uv run devinit"
+echo "   # Install with development dependencies"
+echo "   uv pip install -e .[dev] && uv run poe devinit"
+echo ""
+echo "2. Available tasks (run with 'uv run poe <task-name>'):"
+echo "   format     - Format code using black"
+echo "   check      - Type check with mypy"
+echo "   test       - Run tests with pytest"
+echo "   test-cov   - Run tests with coverage"
