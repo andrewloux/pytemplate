@@ -25,6 +25,8 @@ dev = [
     "mypy>=1.15.0",
     "pytest>=8.3.4",
     "pytest-cov>=4.1.0",
+    "pytest-watch>=4.2.0",
+    "ruff>=0.3.0",
     "poethepoet>=0.25.0",
 ]
 
@@ -104,21 +106,32 @@ python_classes = "Test*"
 #   test-cov   - Run tests with coverage
 
 [tool.poe.tasks]
-# Project initialization
+# Core development tasks
+format = { cmd = "black src/ tests/", help = "Format code with black" }
+check = { cmd = "mypy src/ tests/", help = "Type check with mypy" }
+lint = { cmd = "ruff check src/ tests/", help = "Lint code with ruff" }
+fix = { cmd = "ruff check --fix src/ tests/", help = "Auto-fix linting issues with ruff" }
+
+# Code quality all-in-one
+quality = { sequence = ["format", "fix", "check"], help = "Run all code quality checks (format, fix, type check)" }
+
+# Test tasks
+test = { cmd = "pytest tests/", help = "Run tests" }
+test-cov = { cmd = "pytest --cov=src tests/ --cov-report=term --cov-report=html", help = "Run tests with coverage" }
+test-watch = { cmd = "pytest-watch -- tests/", help = "Run tests in watch mode (auto-rerun on changes)" }
+
+# Environment tasks
+update = { cmd = "uv pip install -U -e .[dev]", help = "Update all dependencies" }
+list = { cmd = "uv pip list", help = "List installed packages" }
+
+# Project maintenance
+clean = { sequence = ["clean-build", "clean-pyc"], help = "Clean all build artifacts" }
+clean-build = { cmd = "rm -rf build/ dist/ *.egg-info", help = "Clean build artifacts" }
+clean-pyc = { cmd = "find . -name '*.pyc' -delete -or -name '__pycache__' -delete", help = "Clean bytecode files" }
+
+# Build and package
+build = { cmd = "uv build", help = "Build package distribution files" }
+
+# Internal needs - kept for compatibility with bootstrap.sh
 init-project = { script = "scripts/init_project.py", help = "Initialize project with a name (replaces placeholders)" }
-
-# Installation tasks
-init = "uv pip install -e ."
-devinit = "uv pip install -e .[dev]"
-
-# Development tasks
-format = "black src/ tests/"
-check = "mypy src/ tests/"
-test = "pytest tests/"
-test-cov = "pytest --cov=src tests/"
-
-# Combined initialization task
-setup = { sequence = ["devinit", "format", "check"], help = "Setup project completely with one command" }
-
-# Full bootstrap task (initialize project, install deps, format and check)
-bootstrap = { sequence = ["init-project", "devinit", "format", "check"], args = ["<project_name>"], help = "Full project bootstrap: initialize with name, install deps, format code" }
+setup = { sequence = ["format", "fix", "check"], help = "Run setup tasks after installation" }

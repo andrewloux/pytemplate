@@ -4,13 +4,14 @@ A modern, strongly-typed Python project using uv and poethepoet.
 
 ## Features
 
+- **One-Command Bootstrap**: Get started instantly with a single command
 - **Ultra-Fast Dependency Management**: Using uv, the next-generation Python package manager
-- **Modern Task Runner**: Task automation with poethepoet
-- **Comprehensive Type Safety**: Ultra-strict type checking with mypy
+- **Comprehensive Code Quality**: Integration of black (formatting), mypy (type checking), and ruff (linting)
+- **Modern Task Runner**: 15+ development tasks via poethepoet for every workflow need
+- **Interactive Development**: Watch mode for tests and auto-fix capabilities
+- **Strict Type Checking**: Ultra-strict mypy configuration for type safety
 - **Modern Type Annotations**: TypedDict, Literal, and Final type annotations
-- **Testing Framework**: pytest with coverage reporting
-- **Code Formatting**: Black code formatter
-- **Data Validation**: Pydantic for runtime validation
+- **Testing Framework**: pytest with coverage and watch mode
 - **Clean Structure**: Organized project structure with src layout
 
 ## Quick Start
@@ -26,19 +27,39 @@ A modern, strongly-typed Python project using uv and poethepoet.
    git init
    ```
 
-2. Run the initialization script with your project name:
+2. Bootstrap the project with a single command:
    ```bash
-   # Initialize project (project name must be lowercase with underscores)
-   ./scripts/init.sh my_project_name
+   # Initialize, install dependencies, format code, and verify type checking
+   ./bootstrap.sh my_project_name
    ```
 
-3. Complete setup with a single command:
+That's it! The bootstrap script handles everything:
+- Replaces project name placeholders
+- Installs dependencies including development tools
+- Formats code with black
+- Runs type checking
+
+### Manual Setup (Alternative)
+
+If you prefer more control over the setup process:
+
+1. Initialize the project:
    ```bash
-   # Install dependencies, format code, and verify type checking
-   uv pip install -e .[dev] && uv run poe setup
+   # First install poethepoet
+   uv pip install poethepoet
+
+   # Then initialize the project
+   uv run poe init-project my_project_name
    ```
 
-That's it! Your project is now ready for development.
+2. Install dependencies and set up:
+   ```bash
+   # Install dev dependencies
+   uv pip install -e .[dev]
+
+   # Run setup tasks
+   uv run poe setup
+   ```
 
 ## Task Runner (uv + poe)
 
@@ -51,15 +72,29 @@ uv run poe <task-name>
 
 ### Available Tasks
 
+#### Code Quality
 | Task      | Description                                   | Command                |
 |-----------|-----------------------------------------------|------------------------|
-| init      | Install with regular dependencies             | uv run poe init        |
-| devinit   | Install with development dependencies         | uv run poe devinit     |
 | format    | Format code with black                        | uv run poe format      |
 | check     | Type check with mypy                          | uv run poe check       |
-| test      | Run tests with pytest                         | uv run poe test        |
-| test-cov  | Run tests with coverage                       | uv run poe test-cov    |
-| setup     | Full dev setup (installs, formats, checks)    | uv run poe setup       |
+| lint      | Lint code with ruff                           | uv run poe lint        |
+| fix       | Auto-fix linting issues                       | uv run poe fix         |
+| quality   | Run all code quality checks                   | uv run poe quality     |
+
+#### Testing
+| Task        | Description                                 | Command                   |
+|-------------|---------------------------------------------|---------------------------|
+| test        | Run tests with pytest                       | uv run poe test           |
+| test-cov    | Run tests with coverage                     | uv run poe test-cov       |
+| test-watch  | Run tests in watch mode (auto-rerun)        | uv run poe test-watch     |
+
+#### Project Maintenance
+| Task        | Description                                 | Command                   |
+|-------------|---------------------------------------------|---------------------------|
+| update      | Update all dependencies                     | uv run poe update         |
+| list        | List installed packages                     | uv run poe list           |
+| clean       | Remove all build artifacts                  | uv run poe clean          |
+| build       | Build package distribution files            | uv run poe build          |
 
 ## Project Structure
 
@@ -98,23 +133,32 @@ This template enforces strict typing to catch errors early:
 
 ```bash
 # 1. Make sure you're using the latest dependencies
-uv run poe devinit
+uv run poe update
 
 # 2. Create a new branch
 git checkout -b feature/my-feature
 
 # 3. Make your changes...
 
-# 4. Format and type check
-uv run poe format
-uv run poe check
+# 4. Run the quality checks in one go
+uv run poe quality
 
-# 5. Run tests
-uv run poe test
+# 5. Run tests with coverage
+uv run poe test-cov
 
 # 6. Commit your changes
 git add .
 git commit -m "Add my feature"
+```
+
+### Interactive Development
+
+```bash
+# Watch your tests while developing (auto-runs on file changes)
+uv run poe test-watch
+
+# Quick check between changes
+uv run poe format && uv run poe fix
 ```
 
 ### Running Specific Tests
@@ -132,9 +176,64 @@ uv run -- pytest -vv tests/
 
 ## Dependency Management
 
-- Add a new dependency: `uv add package_name`
-- Remove a dependency: `uv remove package_name`
-- Update dependencies: `uv pip install -U -e .[dev]`
+### Installing Packages
+
+```bash
+# Install a new package and add to dependencies
+uv add package_name
+
+# Install a specific version
+uv add package_name==1.2.3
+
+# Install with extras
+uv add "package_name[extra1,extra2]"
+
+# Install a development dependency
+uv add --dev pytest-mock
+
+# Install from git
+uv add git+https://github.com/user/repo.git
+```
+
+### Managing Dependencies
+
+```bash
+# List installed packages
+uv run poe list
+
+# Update all dependencies to latest compatible versions
+uv run poe update
+
+# Remove a package
+uv remove package_name
+
+# Install in development mode
+uv pip install -e .
+
+# Install with development dependencies
+uv pip install -e .[dev]
+```
+
+### Managing Requirements
+
+```bash
+# Generate requirements.txt from pyproject.toml
+uv pip freeze > requirements.txt
+
+# Lock dependencies (creates requirements.lock)
+uv pip freeze > requirements.lock
+
+# Install from requirements.txt
+uv pip install -r requirements.txt
+```
+
+### Best Practices
+
+- Pin versions in production environments for reproducibility
+- Use version ranges in development for flexibility
+- Keep dev dependencies separate from runtime dependencies
+- Regularly run `uv run poe update` to check for updates
+- Consider using `uv pip compile` for more complex dependency trees
 
 ## CI/CD Integration
 
