@@ -70,13 +70,13 @@ uv pip install poethepoet
 # Try to initialize the project
 info "Initializing project as: $PROJECT_NAME"
 
-# Ensure the init_project.py script exists
+# Ensure the initialization script exists
 if [ ! -f "scripts/init_project.py" ]; then
     error "Initialization script not found at scripts/init_project.py"
     exit 1
 fi
 
-# Run the initialization script (but don't exit on error)
+# Run the initialization script directly (but don't exit on error)
 set +e
 python scripts/init_project.py "$PROJECT_NAME"
 INIT_RESULT=$?

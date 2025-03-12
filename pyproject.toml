@@ -133,5 +133,5 @@ clean-pyc = { cmd = "find . -name '*.pyc' -delete -or -name '__pycache__' -delet
 build = { cmd = "uv build", help = "Build package distribution files" }
 
 # Internal needs - kept for compatibility with bootstrap.sh
-init-project = { script = "scripts/init_project.py", help = "Initialize project with a name (replaces placeholders)" }
+init-project = { cmd = "python scripts/init_project.py", args = ["."], help = "Initialize project with a name (replaces placeholders)" }
 setup = { sequence = ["format", "fix", "check"], help = "Run setup tasks after installation" }
