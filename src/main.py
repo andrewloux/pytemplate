@@ -15,6 +15,7 @@ DEBUG_MODE: Final[bool] = True
 # Use TypedDict for structured dictionary returns
 class AppConfig(TypedDict):
     """Application configuration settings."""
+
     name: str
     debug: bool
     version: str
@@ -23,7 +24,7 @@ class AppConfig(TypedDict):
 def get_config() -> AppConfig:
     """
     Get application configuration.
-    
+
     Returns:
         AppConfig: The application configuration
     """
@@ -41,7 +42,7 @@ LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 def configure_logging(level: LogLevel = "INFO") -> None:
     """
     Configure application logging.
-    
+
     Args:
         level: The log level to use
     """
@@ -52,13 +53,13 @@ def main() -> None:
     """Main entry point for the application."""
     # Load environment variables
     load_dotenv()
-    
+
     # Get configuration
     config: AppConfig = get_config()
-    
+
     # Configure logging
     configure_logging(level="DEBUG" if config["debug"] else "INFO")
-    
+
     print(f"Application {config['name']} v{config['version']} started")
 
 
